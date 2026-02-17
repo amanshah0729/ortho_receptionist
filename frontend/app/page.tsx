@@ -1,6 +1,26 @@
 import Link from "next/link";
 import { supabase, type Call } from "@/lib/supabase";
 
+function intentStyle(intent: string): string {
+  switch (intent) {
+    case "New Patient Consultation":
+      return "bg-emerald-100 text-emerald-700 border border-emerald-200";
+    case "Adjustment":
+      return "bg-blue-100 text-blue-700 border border-blue-200";
+    case "Broken Appliance":
+      return "bg-red-100 text-red-700 border border-red-200";
+    case "Pain/Discomfort":
+      return "bg-orange-100 text-orange-700 border border-orange-200";
+    case "Scheduling Change":
+      return "bg-amber-100 text-amber-700 border border-amber-200";
+    case "Insurance/Billing":
+      return "bg-violet-100 text-violet-700 border border-violet-200";
+    case "General Question":
+    default:
+      return "bg-slate-100 text-slate-600 border border-slate-200";
+  }
+}
+
 function formatDuration(seconds: number | null): string {
   if (seconds === null || seconds === undefined) return "—";
   const m = Math.floor(seconds / 60);
@@ -119,12 +139,18 @@ export default async function Dashboard() {
                       <div className="max-h-44 overflow-y-auto pr-2">
                         {call.next_steps ? (
                           <div className="bg-linear-to-r from-fuchsia-50 to-purple-50 border border-fuchsia-200/60 rounded-xl px-4 py-3">
-                            <div className="flex items-center gap-1.5 mb-1">
-                              <span className="w-2 h-2 rounded-full bg-fuchsia-500 animate-pulse" />
-                              <span className="text-[10px] font-bold text-fuchsia-600 uppercase tracking-widest">
-                                Action Required
-                              </span>
-                            </div>
+                            {call.intent && call.intent.length > 0 && (
+                              <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                                {call.intent.map((tag) => (
+                                  <span
+                                    key={tag}
+                                    className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${intentStyle(tag)}`}
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                             <p className="text-[13px] font-medium text-slate-700 leading-relaxed">
                               {call.next_steps}
                             </p>

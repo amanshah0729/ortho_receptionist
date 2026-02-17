@@ -13,4 +13,5 @@ export type Call = {
   caller_phone: string | null;
   caller_name: string | null;
   duration: number | null;
+  intent: string[] | null;
 };
