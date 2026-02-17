@@ -1,6 +1,17 @@
 import Link from "next/link";
 import { supabase, type Call } from "@/lib/supabase";
 
+function getIntentArray(intent: string[] | string | null): string[] {
+  if (!intent) return [];
+  if (Array.isArray(intent)) return intent;
+  try {
+    const parsed = JSON.parse(intent);
+    return Array.isArray(parsed) ? parsed : [String(parsed)];
+  } catch {
+    return [String(intent)];
+  }
+}
+
 function intentStyle(intent: string): string {
   switch (intent) {
     case "New Patient Consultation":
@@ -139,9 +150,9 @@ export default async function Dashboard() {
                       <div className="max-h-44 overflow-y-auto pr-2">
                         {call.next_steps ? (
                           <div className="bg-linear-to-r from-fuchsia-50 to-purple-50 border border-fuchsia-200/60 rounded-xl px-4 py-3">
-                            {call.intent && call.intent.length > 0 && (
+                            {getIntentArray(call.intent).length > 0 && (
                               <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                                {call.intent.map((tag) => (
+                                {getIntentArray(call.intent).map((tag) => (
                                   <span
                                     key={tag}
                                     className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${intentStyle(tag)}`}
